@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurația Electronică a Ionilor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #3a7bd5);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .controls-panel {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            max-height: 750px;
+            overflow-y: auto;
+        }
+
+        .visualization-panel {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .periodic-table-container {
+            flex: 2;
+            min-width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            max-height: 750px;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            color: #1a2a6c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3a7bd5;
+        }
+
+        .selected-element-display {
+            background: linear-gradient(135deg, #3a7bd5, #1a2a6c);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .selected-element-symbol {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .selected-element-name {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .selected-element-details {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .electron-info-box {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            border-left: 5px solid #3498db;
+        }
+
+        .electron-info-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .electron-info-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 10px 0;
+        }
+
+        .electron-info-description {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .ion-type-indicator {
+            margin-bottom: 25px;
+        }
+
+        .ion-type-box {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .ion-type-box.positive {
+            border-color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        .ion-type-box.negative {
+            border-color: #27ae60;
+            background-color: rgba(39, 174, 96, 0.1);
+        }
+
+        .ion-type-box.neutral {
+            border-color: #3498db;
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .ion-type-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .positive {
+            color: #e74c3c;
+        }
+
+        .negative {
+            color: #27ae60;
+        }
+
+        .neutral {
+            color: #3498db;
+        }
+
+        .ion-charge-selector {
+            margin-bottom: 25px;
+        }
+
+        .ion-charge-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .ion-charge-option {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .ion-charge-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .ion-charge-option.active {
+            border-color: #3a7bd5;
+            background-color: rgba(58, 123, 213, 0.1);
+            color: #1a2a6c;
+        }
+
+        .ion-charge-option.positive-option.active {
+            border-color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        .ion-charge-option.negative-option.active {
+            border-color: #27ae60;
+            background-color: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-animate {
+            background-color: #3a7bd5;
+            color: white;
+        }
+
+        .btn-animate:hover {
+            background-color: #2a6bc5;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(58, 123, 213, 0.4);
+        }
+
+        .btn-reset {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+
+        .btn-reset:hover {
+            background-color: #e9ecef;
+            transform: translateY(-3px);
+        }
+
+        .electron-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            position: relative;
+        }
+
+        .atom-representation {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 30px;
+        }
+
+        .nucleus {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.7);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border: 2px dashed rgba(58, 123, 213, 0.4);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .electron {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background-color: #3498db;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.8);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            transition: all 1.5s ease-in-out;
+        }
+
+        .electron-label {
+            position: absolute;
+            font-size: 11px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .info-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+
+        .config-display {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            border-left: 5px solid #3a7bd5;
+        }
+
+        .config-item {
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .electron-transfer {
+            position: absolute;
+            width: 100px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            z-index: 30;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .transfer-positive {
+            color: #e74c3c;
+        }
+
+        .transfer-negative {
+            color: #27ae60;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+
+        .legend-nucleus {
+            background-color: #e74c3c;
+        }
+
+        .legend-electron {
+            background-color: #3498db;
+        }
+
+        /* Periodic Table Styles */
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(18, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            gap: 3px;
+            margin-top: 15px;
+        }
+
+        .periodic-element {
+            background-color: #f0f8ff;
+            border-radius: 4px;
+            padding: 6px 2px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 55px;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .periodic-element:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .periodic-element.selected {
+            border-color: #3a7bd5;
+            background-color: rgba(58, 123, 213, 0.1);
+            box-shadow: 0 0 8px rgba(58, 123, 213, 0.3);
+        }
+
+        .element-symbol {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 1px;
+        }
+
+        .element-name {
+            font-size: 0.65rem;
+            line-height: 1.1;
+            height: 28px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .element-number {
+            font-size: 0.65rem;
+            align-self: flex-start;
+            margin-bottom: 2px;
+            color: #666;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+        }
+
+        /* Element group colors */
+        .alkali-metal { background-color: #ff9999; }
+        .alkaline-earth { background-color: #ffcc99; }
+        .transition-metal { background-color: #ffff99; }
+        .basic-metal { background-color: #ccff99; }
+        .metalloid { background-color: #99ffcc; }
+        .nonmetal { background-color: #99ffff; }
+        .halogen { background-color: #9999ff; }
+        .noble-gas { background-color: #ff99ff; }
+        .lanthanide { background-color: #ffccff; }
+        .actinide { background-color: #ffcccc; }
+        .unknown { background-color: #e0e0e0; }
+
+        /* Empty cells in periodic table */
+        .empty-cell {
+            background-color: transparent;
+            cursor: default;
+        }
+
+        .periodic-table-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .legend-color-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            margin-right: 4px;
+        }
+
+        .legend-item-periodic {
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            margin-right: 8px;
+        }
+
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #3a7bd5;
+            outline: none;
+        }
+
+        @media (max-width: 1400px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .periodic-table-container {
+                max-height: none;
+            }
+            
+            .periodic-table {
+                grid-template-columns: repeat(18, 25px);
+            }
+            
+            .periodic-element {
+                min-height: 45px;
+                padding: 4px 1px;
+            }
+            
+            .element-symbol {
+                font-size: 0.9rem;
+            }
+            
+            .element-name {
+                font-size: 0.55rem;
+                height: 22px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .periodic-table {
+                grid-template-columns: repeat(9, 1fr);
+                grid-template-rows: repeat(18, 1fr);
+            }
+        }
+
+        .loading {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: #3a7bd5;
+        }
+
+        .lanthanide-actinide-container {
+            grid-column: 4 / span 15;
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            gap: 3px;
+            margin-top: 10px;
+        }
+
+        .lanthanide-actinide-label {
+            grid-column: 1 / span 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .common-charge-note {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            text-align: center;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Configurația Electronică a Ionilor</h1>
+            <p class="subtitle">Selectează un element pentru a vedea câți electroni cedează și pentru a anima procesul de formare a ionilor.</p>
+        </header>
+
+        <div class="main-content">
+            <div class="controls-panel">
+                <h2 class="panel-title">Configurare Ion</h2>
+                
+                <div class="selected-element-display" id="selectedElementDisplay">
+                    <div class="selected-element-symbol">Na</div>
+                    <div class="selected-element-name">Sodiu</div>
+                    <div class="selected-element-details">Număr atomic: 11 | Grup: 1 | Perioadă: 3</div>
+                </div>
+                
+                <div class="electron-info-box" id="electronInfoBox">
+                    <div class="electron-info-title">
+                        <i class="fas fa-atom"></i>
+                        <span>Electroni cedați</span>
+                    </div>
+                    <div class="electron-info-value" id="electronsLostValue">1</div>
+                    <div class="electron-info-description" id="electronsLostDescription">
+                        Sodiu cedează <strong>1 electron</strong> pentru a forma ionul Na⁺
+                    </div>
+                    <div class="common-charge-note" id="commonChargeNote">
+                        Aceasta este sarcina cea mai comună pentru acest element
+                    </div>
+                </div>
+                
+                <div class="ion-type-indicator">
+                    <div class="ion-type-box positive" id="ionTypeBox">
+                        <div class="ion-type-label">
+                            <i class="fas fa-plus-circle positive"></i>
+                            <span>Ion Pozitiv (Cation)</span>
+                        </div>
+                        <div>Elementul formează ioni pozitivi prin cedarea electronilor</div>
+                    </div>
+                </div>
+                
+                <div class="ion-charge-selector">
+                    <label class="selector-label">Stări de oxidare posibile:</label>
+                    <div class="ion-charge-options" id="ionChargeOptions">
+                        <!-- Butoanele pentru stările de oxidare se vor genera aici -->
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-animate" id="animateBtn">
+                        <i class="fas fa-play-circle"></i> Animează Procesul
+                    </button>
+                    <button class="btn btn-reset" id="resetBtn">
+                        <i class="fas fa-redo"></i> Resetează
+                    </button>
+                </div>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color legend-nucleus"></div>
+                        <span>Nucleu atomic</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-electron"></div>
+                        <span>Electron</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="visualization-panel">
+                <h2 class="panel-title">Vizualizare Proces</h2>
+                <div class="electron-container">
+                    <div class="atom-representation" id="atomRepresentation">
+                        <!-- Nucleus and electrons will be added here dynamically -->
+                    </div>
+                    <div class="loading" id="loadingAnimation">Se procesează...</div>
+                </div>
+            </div>
+            
+            <div class="periodic-table-container">
+                <h2 class="panel-title">Tabelul Periodic</h2>
+                <div class="search-box">
+                    <input type="text" id="elementSearch" class="search-input" placeholder="Caută element (ex: Hidrogen, H, 1)">
+                </div>
+                <div class="periodic-table" id="periodicTable">
+                    <!-- Periodic table will be generated here -->
+                </div>
+                
+                <div class="periodic-table-legend">
+                    <div class="legend-item-periodic">
+                        <div class="legend-color-box alkali-metal"></div>
+                        <span>Metale alcaline</span>
+                    </div>
+                    <div class="legend-item-periodic">
+                        <div class="legend-color-box alkaline-earth"></div>
+                        <span>Metale alcalino-pământoase</span>
+                    </div>
+                    <div class="legend-item-periodic">
+                        <div class="legend-color-box transition-metal"></div>
+                        <span>Metale de tranziție</span>
+                    </div>
+                    <div class="legend-item-periodic">
+                        <div class="legend-color-box nonmetal"></div>
+                        <span>Nemetale</span>
+                    </div>
+                    <div class="legend-item-periodic">
+                        <div class="legend-color-box halogen"></div>
+                        <span>Halogeni</span>
+                    </div>
+                    <div class="legend-item-periodic">
+                        <div class="legend-color-box noble-gas"></div>
+                        <span>Gaze nobile</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <h2 class="panel-title">Informații despre Configurația Electronică</h2>
+            <div class="config-display" id="configDisplay">
+                <!-- Configuration will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // All 118 elements data
+        const elements = [
+            // Period 1
+            { symbol: "H", name: "Hidrogen", atomicNumber: 1, config: "1s¹", group: 1, period: 1, category: "nonmetal" },
+            { symbol: "He", name: "Heliu", atomicNumber: 2, config: "1s²", group: 18, period: 1, category: "noble-gas" },
+            
+            // Period 2
+            { symbol: "Li", name: "Litiu", atomicNumber: 3, config: "[He] 2s¹", group: 1, period: 2, category: "alkali-metal" },
+            { symbol: "Be", name: "Beriliu", atomicNumber: 4, config: "[He] 2s²", group: 2, period: 2, category: "alkaline-earth" },
+            { symbol: "B", name: "Bor", atomicNumber: 5, config: "[He] 2s² 2p¹", group: 13, period: 2, category: "metalloid" },
+            { symbol: "C", name: "Carbon", atomicNumber: 6, config: "[He] 2s² 2p²", group: 14, period: 2, category: "nonmetal" },
+            { symbol: "N", name: "Azot", atomicNumber: 7, config: "[He] 2s² 2p³", group: 15, period: 2, category: "nonmetal" },
+            { symbol: "O", name: "Oxigen", atomicNumber: 8, config: "[He] 2s² 2p⁴", group: 16, period: 2, category: "nonmetal" },
+            { symbol: "F", name: "Fluor", atomicNumber: 9, config: "[He] 2s² 2p⁵", group: 17, period: 2, category: "halogen" },
+            { symbol: "Ne", name: "Neon", atomicNumber: 10, config: "[He] 2s² 2p⁶", group: 18, period: 2, category: "noble-gas" },
+            
+            // Period 3
+            { symbol: "Na", name: "Sodiu", atomicNumber: 11, config: "[Ne] 3s¹", group: 1, period: 3, category: "alkali-metal" },
+            { symbol: "Mg", name: "Magneziu", atomicNumber: 12, config: "[Ne] 3s²", group: 2, period: 3, category: "alkaline-earth" },
+            { symbol: "Al", name: "Aluminiu", atomicNumber: 13, config: "[Ne] 3s² 3p¹", group: 13, period: 3, category: "basic-metal" },
+            { symbol: "Si", name: "Siliciu", atomicNumber: 14, config: "[Ne] 3s² 3p²", group: 14, period: 3, category: "metalloid" },
+            { symbol: "P", name: "Fosfor", atomicNumber: 15, config: "[Ne] 3s² 3p³", group: 15, period: 3, category: "nonmetal" },
+            { symbol: "S", name: "Sulf", atomicNumber: 16, config: "[Ne] 3s² 3p⁴", group: 16, period: 3, category: "nonmetal" },
+            { symbol: "Cl", name: "Clor", atomicNumber: 17, config: "[Ne] 3s² 3p⁵", group: 17, period: 3, category: "halogen" },
+            { symbol: "Ar", name: "Argon", atomicNumber: 18, config: "[Ne] 3s² 3p⁶", group: 18, period: 3, category: "noble-gas" },
+            
+            // Period 4
+            { symbol: "K", name: "Potasiu", atomicNumber: 19, config: "[Ar] 4s¹", group: 1, period: 4, category: "alkali-metal" },
+            { symbol: "Ca", name: "Calciu", atomicNumber: 20, config: "[Ar] 4s²", group: 2, period: 4, category: "alkaline-earth" },
+            { symbol: "Sc", name: "Scandiu", atomicNumber: 21, config: "[Ar] 3d¹ 4s²", group: 3, period: 4, category: "transition-metal" },
+            { symbol: "Ti", name: "Titan", atomicNumber: 22, config: "[Ar] 3d² 4s²", group: 4, period: 4, category: "transition-metal" },
+            { symbol: "V", name: "Vanadiu", atomicNumber: 23, config: "[Ar] 3d³ 4s²", group: 5, period: 4, category: "transition-metal" },
+            { symbol: "Cr", name: "Crom", atomicNumber: 24, config: "[Ar] 3d⁵ 4s¹", group: 6, period: 4, category: "transition-metal" },
+            { symbol: "Mn", name: "Mangan", atomicNumber: 25, config: "[Ar] 3d⁵ 4s²", group: 7, period: 4, category: "transition-metal" },
+            { symbol: "Fe", name: "Fier", atomicNumber: 26, config: "[Ar] 3d⁶ 4s²", group: 8, period: 4, category: "transition-metal" },
+            { symbol: "Co", name: "Cobalt", atomicNumber: 27, config: "[Ar] 3d⁷ 4s²", group: 9, period: 4, category: "transition-metal" },
+            { symbol: "Ni", name: "Nichel", atomicNumber: 28, config: "[Ar] 3d⁸ 4s²", group: 10, period: 4, category: "transition-metal" },
+            { symbol: "Cu", name: "Cupru", atomicNumber: 29, config: "[Ar] 3d¹⁰ 4s¹", group: 11, period: 4, category: "transition-metal" },
+            { symbol: "Zn", name: "Zinc", atomicNumber: 30, config: "[Ar] 3d¹⁰ 4s²", group: 12, period: 4, category: "transition-metal" },
+            { symbol: "Ga", name: "Galiu", atomicNumber: 31, config: "[Ar] 3d¹⁰ 4s² 4p¹", group: 13, period: 4, category: "basic-metal" },
+            { symbol: "Ge", name: "Germaniu", atomicNumber: 32, config: "[Ar] 3d¹⁰ 4s² 4p²", group: 14, period: 4, category: "metalloid" },
+            { symbol: "As", name: "Arsen", atomicNumber: 33, config: "[Ar] 3d¹⁰ 4s² 4p³", group: 15, period: 4, category: "metalloid" },
+            { symbol: "Se", name: "Seleniu", atomicNumber: 34, config: "[Ar] 3d¹⁰ 4s² 4p⁴", group: 16, period: 4, category: "nonmetal" },
+            { symbol: "Br", name: "Brom", atomicNumber: 35, config: "[Ar] 3d¹⁰ 4s² 4p⁵", group: 17, period: 4, category: "halogen" },
+            { symbol: "Kr", name: "Kripton", atomicNumber: 36, config: "[Ar] 3d¹⁰ 4s² 4p⁶", group: 18, period: 4, category: "noble-gas" },
+            
+            // Period 5
+            { symbol: "Rb", name: "Rubidiu", atomicNumber: 37, config: "[Kr] 5s¹", group: 1, period: 5, category: "alkali-metal" },
+            { symbol: "Sr", name: "Stronțiu", atomicNumber: 38, config: "[Kr] 5s²", group: 2, period: 5, category: "alkaline-earth" },
+            { symbol: "Y", name: "Ytriu", atomicNumber: 39, config: "[Kr] 4d¹ 5s²", group: 3, period: 5, category: "transition-metal" },
+            { symbol: "Zr", name: "Zirconiu", atomicNumber: 40, config: "[Kr] 4d² 5s²", group: 4, period: 5, category: "transition-metal" },
+            { symbol: "Nb", name: "Niobiu", atomicNumber: 41, config: "[Kr] 4d⁴ 5s¹", group: 5, period: 5, category: "transition-metal" },
+            { symbol: "Mo", name: "Molibden", atomicNumber: 42, config: "[Kr] 4d⁵ 5s¹", group: 6, period: 5, category: "transition-metal" },
+            { symbol: "Tc", name: "Tehnețiu", atomicNumber: 43, config: "[Kr] 4d⁵ 5s²", group: 7, period: 5, category: "transition-metal" },
+            { symbol: "Ru", name: "Ruteniu", atomicNumber: 44, config: "[Kr] 4d⁷ 5s¹", group: 8, period: 5, category: "transition-metal" },
+            { symbol: "Rh", name: "Rodiu", atomicNumber: 45, config: "[Kr] 4d⁸ 5s¹", group: 9, period: 5, category: "transition-metal" },
+            { symbol: "Pd", name: "Paladiu", atomicNumber: 46, config: "[Kr] 4d¹⁰", group: 10, period: 5, category: "transition-metal" },
+            { symbol: "Ag", name: "Argint", atomicNumber: 47, config: "[Kr] 4d¹⁰ 5s¹", group: 11, period: 5, category: "transition-metal" },
+            { symbol: "Cd", name: "Cadmiu", atomicNumber: 48, config: "[Kr] 4d¹⁰ 5s²", group: 12, period: 5, category: "transition-metal" },
+            { symbol: "In", name: "Indiu", atomicNumber: 49, config: "[Kr] 4d¹⁰ 5s² 5p¹", group: 13, period: 5, category: "basic-metal" },
+            { symbol: "Sn", name: "Staniu", atomicNumber: 50, config: "[Kr] 4d¹⁰ 5s² 5p²", group: 14, period: 5, category: "basic-metal" },
+            { symbol: "Sb", name: "Stibiu", atomicNumber: 51, config: "[Kr] 4d¹⁰ 5s² 5p³", group: 15, period: 5, category: "metalloid" },
+            { symbol: "Te", name: "Telur", atomicNumber: 52, config: "[Kr] 4d¹⁰ 5s² 5p⁴", group: 16, period: 5, category: "metalloid" },
+            { symbol: "I", name: "Iod", atomicNumber: 53, config: "[Kr] 4d¹⁰ 5s² 5p⁵", group: 17, period: 5, category: "halogen" },
+            { symbol: "Xe", name: "Xenon", atomicNumber: 54, config: "[Kr] 4d¹⁰ 5s² 5p⁶", group: 18, period: 5, category: "noble-gas" },
+            
+            // Period 6
+            { symbol: "Cs", name: "Cesiu", atomicNumber: 55, config: "[Xe] 6s¹", group: 1, period: 6, category: "alkali-metal" },
+            { symbol: "Ba", name: "Bariu", atomicNumber: 56, config: "[Xe] 6s²", group: 2, period: 6, category: "alkaline-earth" },
+            { symbol: "La", name: "Lantan", atomicNumber: 57, config: "[Xe] 5d¹ 6s²", group: 3, period: 6, category: "lanthanide" },
+            { symbol: "Hf", name: "Hafniu", atomicNumber: 72, config: "[Xe] 4f¹⁴ 5d² 6s²", group: 4, period: 6, category: "transition-metal" },
+            { symbol: "Ta", name: "Tantal", atomicNumber: 73, config: "[Xe] 4f¹⁴ 5d³ 6s²", group: 5, period: 6, category: "transition-metal" },
+            { symbol: "W", name: "Wolfram", atomicNumber: 74, config: "[Xe] 4f¹⁴ 5d⁴ 6s²", group: 6, period: 6, category: "transition-metal" },
+            { symbol: "Re", name: "Reniu", atomicNumber: 75, config: "[Xe] 4f¹⁴ 5d⁵ 6s²", group: 7, period: 6, category: "transition-metal" },
+            { symbol: "Os", name: "Osmiu", atomicNumber: 76, config: "[Xe] 4f¹⁴ 5d⁶ 6s²", group: 8, period: 6, category: "transition-metal" },
+            { symbol: "Ir", name: "Iridiu", atomicNumber: 77, config: "[Xe] 4f¹⁴ 5d⁷ 6s²", group: 9, period: 6, category: "transition-metal" },
+            { symbol: "Pt", name: "Platină", atomicNumber: 78, config: "[Xe] 4f¹⁴ 5d⁹ 6s¹", group: 10, period: 6, category: "transition-metal" },
+            { symbol: "Au", name: "Aur", atomicNumber: 79, config: "[Xe] 4f¹⁴ 5d¹⁰ 6s¹", group: 11, period: 6, category: "transition-metal" },
+            { symbol: "Hg", name: "Mercur", atomicNumber: 80, config: "[Xe] 4f¹⁴ 5d¹⁰ 6s²", group: 12, period: 6, category: "transition-metal" },
+            { symbol: "Tl", name: "Taliu", atomicNumber: 81, config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹", group: 13, period: 6, category: "basic-metal" },
+            { symbol: "Pb", name: "Plumb", atomicNumber: 82, config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²", group: 14, period: 6, category: "basic-metal" },
+            { symbol: "Bi", name: "Bismut", atomicNumber: 83, config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³", group: 15, period: 6, category: "basic-metal" },
+            { symbol: "Po", name: "Poloniu", atomicNumber: 84, config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴", group: 16, period: 6, category: "metalloid" },
+            { symbol: "At", name: "Astat", atomicNumber: 85, config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵", group: 17, period: 6, category: "halogen" },
+            { symbol: "Rn", name: "Radon", atomicNumber: 86, config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶", group: 18, period: 6, category: "noble-gas" },
+            
+            // Period 7
+            { symbol: "Fr", name: "Franciu", atomicNumber: 87, config: "[Rn] 7s¹", group: 1, period: 7, category: "alkali-metal" },
+            { symbol: "Ra", name: "Radiu", atomicNumber: 88, config: "[Rn] 7s²", group: 2, period: 7, category: "alkaline-earth" },
+            { symbol: "Rf", name: "Rutherfordiu", atomicNumber: 104, config: "[Rn] 5f¹⁴ 6d² 7s²", group: 4, period: 7, category: "transition-metal" },
+            { symbol: "Db", name: "Dubniu", atomicNumber: 105, config: "[Rn] 5f¹⁴ 6d³ 7s²", group: 5, period: 7, category: "transition-metal" },
+            { symbol: "Sg", name: "Seaborgiu", atomicNumber: 106, config: "[Rn] 5f¹⁴ 6d⁴ 7s²", group: 6, period: 7, category: "transition-metal" },
+            { symbol: "Bh", name: "Bohriu", atomicNumber: 107, config: "[Rn] 5f¹⁴ 6d⁵ 7s²", group: 7, period: 7, category: "transition-metal" },
+            { symbol: "Hs", name: "Hassiu", atomicNumber: 108, config: "[Rn] 5f¹⁴ 6d⁶ 7s²", group: 8, period: 7, category: "transition-metal" },
+            { symbol: "Mt", name: "Meitneriu", atomicNumber: 109, config: "[Rn] 5f¹⁴ 6d⁷ 7s²", group: 9, period: 7, category: "transition-metal" },
+            { symbol: "Ds", name: "Darmstadtiu", atomicNumber: 110, config: "[Rn] 5f¹⁴ 6d⁸ 7s²", group: 10, period: 7, category: "transition-metal" },
+            { symbol: "Rg", name: "Roentgeniu", atomicNumber: 111, config: "[Rn] 5f¹⁴ 6d⁹ 7s²", group: 11, period: 7, category: "transition-metal" },
+            { symbol: "Cn", name: "Coperniciu", atomicNumber: 112, config: "[Rn] 5f¹⁴ 6d¹⁰ 7s²", group: 12, period: 7, category: "transition-metal" },
+            { symbol: "Nh", name: "Nihoniu", atomicNumber: 113, config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹", group: 13, period: 7, category: "basic-metal" },
+            { symbol: "Fl", name: "Fleroviu", atomicNumber: 114, config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²", group: 14, period: 7, category: "basic-metal" },
+            { symbol: "Mc", name: "Moscoviu", atomicNumber: 115, config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³", group: 15, period: 7, category: "basic-metal" },
+            { symbol: "Lv", name: "Livermoriu", atomicNumber: 116, config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴", group: 16, period: 7, category: "basic-metal" },
+            { symbol: "Ts", name: "Tennessine", atomicNumber: 117, config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵", group: 17, period: 7, category: "halogen" },
+            { symbol: "Og", name: "Oganesson", atomicNumber: 118, config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶", group: 18, period: 7, category: "noble-gas" }
+        ];
+
+        // Common oxidation states for elements (most common first)
+        const commonOxidationStates = {
+            // Group 1: Alkali metals - always +1
+            "H": [1, -1], "Li": [1], "Na": [1], "K": [1], "Rb": [1], "Cs": [1], "Fr": [1],
+            
+            // Group 2: Alkaline earth metals - always +2
+            "Be": [2], "Mg": [2], "Ca": [2], "Sr": [2], "Ba": [2], "Ra": [2],
+            
+            // Group 3
+            "Sc": [3], "Y": [3], "La": [3],
+            
+            // Group 4
+            "Ti": [4, 3, 2], "Zr": [4], "Hf": [4],
+            
+            // Group 5
+            "V": [5, 4, 3, 2], "Nb": [5, 3], "Ta": [5],
+            
+            // Group 6
+            "Cr": [3, 6, 2], "Mo": [6, 5, 4, 3], "W": [6, 5, 4],
+            
+            // Group 7
+            "Mn": [2, 4, 7, 3, 6], "Tc": [7, 4, 6], "Re": [7, 6, 4],
+            
+            // Group 8
+            "Fe": [2, 3], "Ru": [3, 4, 8], "Os": [4, 6, 8],
+            
+            // Group 9
+            "Co": [2, 3], "Rh": [3], "Ir": [3, 4],
+            
+            // Group 10
+            "Ni": [2, 3], "Pd": [2, 4], "Pt": [2, 4],
+            
+            // Group 11
+            "Cu": [1, 2], "Ag": [1], "Au": [1, 3],
+            
+            // Group 12
+            "Zn": [2], "Cd": [2], "Hg": [1, 2],
+            
+            // Group 13
+            "B": [3], "Al": [3], "Ga": [3], "In": [3], "Tl": [1, 3],
+            
+            // Group 14
+            "C": [4, 2, -4], "Si": [4], "Ge": [4, 2], "Sn": [4, 2], "Pb": [2, 4],
+            
+            // Group 15
+            "N": [-3, 3, 5], "P": [5, 3, -3], "As": [3, 5, -3], "Sb": [3, 5], "Bi": [3, 5],
+            
+            // Group 16
+            "O": [-2], "S": [-2, 4, 6], "Se": [-2, 4, 6], "Te": [-2, 4, 6], "Po": [2, 4],
+            
+            // Group 17: Halogens
+            "F": [-1], "Cl": [-1, 1, 3, 5, 7], "Br": [-1, 1, 3, 5], "I": [-1, 1, 3, 5, 7], "At": [-1],
+            
+            // Group 18: Noble gases (usually 0)
+            "He": [0], "Ne": [0], "Ar": [0], "Kr": [0], "Xe": [0, 2, 4, 6, 8], "Rn": [0]
+        };
+
+        // Get most common charge for an element
+        function getMostCommonCharge(elementSymbol) {
+            const charges = commonOxidationStates[elementSymbol];
+            if (!charges || charges.length === 0) return 0;
+            
+            // Return the first (most common) charge
+            return charges[0];
+        }
+
+        // Get element ionization type and description
+        function getElementIonInfo(element) {
+            const commonCharge = getMostCommonCharge(element.symbol);
+            const charges = commonOxidationStates[element.symbol] || [0];
+            
+            let ionType = "neutral";
+            let description = "";
+            let electronsText = "0";
+            let chargeNote = "";
+            
+            if (commonCharge > 0) {
+                ionType = "positive";
+                electronsText = Math.abs(commonCharge).toString();
+                description = `${element.name} cedează <strong>${electronsText} electron${commonCharge > 1 ? 'i' : ''}</strong> pentru a forma ionul ${element.symbol}${commonCharge === 1 ? '⁺' : commonCharge + '⁺'}`;
+                
+                if (charges.length > 1) {
+                    const otherCharges = charges.slice(1).filter(c => c > 0);
+                    if (otherCharges.length > 0) {
+                        const otherChargesText = otherCharges.map(c => `${element.symbol}${c === 1 ? '⁺' : c + '⁺'}`).join(', ');
+                        chargeNote = `Mai poate forma și: ${otherChargesText}`;
+                    }
+                }
+            } else if (commonCharge < 0) {
+                ionType = "negative";
+                electronsText = Math.abs(commonCharge).toString();
+                description = `${element.name} acceptă <strong>${electronsText} electron${Math.abs(commonCharge) > 1 ? 'i' : ''}</strong> pentru a forma ionul ${element.symbol}${Math.abs(commonCharge) === 1 ? '⁻' : Math.abs(commonCharge) + '⁻'}`;
+                
+                if (charges.length > 1) {
+                    const otherCharges = charges.slice(1).filter(c => c < 0);
+                    if (otherCharges.length > 0) {
+                        const otherChargesText = otherCharges.map(c => `${element.symbol}${Math.abs(c) === 1 ? '⁻' : Math.abs(c) + '⁻'}`).join(', ');
+                        chargeNote = `Mai poate forma și: ${otherChargesText}`;
+                    }
+                }
+            } else {
+                description = `${element.name} este un gaz nobil și nu formează ioni în condiții normale`;
+                chargeNote = "Gaz nobil - configurație electronică stabilă";
+            }
+            
+            return {
+                commonCharge,
+                ionType,
+                electronsText,
+                description,
+                chargeNote,
+                allCharges: charges
+            };
+        }
+
+        // DOM elements
+        const selectedElementDisplay = document.getElementById('selectedElementDisplay');
+        const electronsLostValue = document.getElementById('electronsLostValue');
+        const electronsLostDescription = document.getElementById('electronsLostDescription');
+        const commonChargeNote = document.getElementById('commonChargeNote');
+        const ionTypeBox = document.getElementById('ionTypeBox');
+        const ionChargeOptions = document.getElementById('ionChargeOptions');
+        const animateBtn = document.getElementById('animateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const atomRepresentation = document.getElementById('atomRepresentation');
+        const configDisplay = document.getElementById('configDisplay');
+        const loadingAnimation = document.getElementById('loadingAnimation');
+        const periodicTable = document.getElementById('periodicTable');
+        const elementSearch = document.getElementById('elementSearch');
+
+        // Current state
+        let currentElement = elements.find(el => el.symbol === "Na");
+        let currentCharge = 1; // Default charge for Sodium
+
+        // Initialize the app
+        function init() {
+            generatePeriodicTable();
+            updateSelectedElementDisplay();
+            updateElectronInfoBox();
+            updateIonTypeDisplay();
+            updateChargeOptions();
+            renderAtom();
+            updateConfigDisplay();
+            
+            // Event listeners
+            animateBtn.addEventListener('click', animateProcess);
+            resetBtn.addEventListener('click', resetAnimation);
+            
+            // Search functionality
+            elementSearch.addEventListener('input', searchElements);
+        }
+
+        // Generate the complete periodic table
+        function generatePeriodicTable() {
+            // Clear the periodic table container
+            periodicTable.innerHTML = '';
+            
+            // Create a grid for the periodic table
+            const grid = Array(10).fill().map(() => Array(18).fill(null));
+            
+            // Place elements in their positions
+            elements.forEach(element => {
+                const row = element.period - 1;
+                let col = element.group - 1;
+                
+                // Adjust for the f-block gap
+                if (element.period >= 6 && element.group >= 3) {
+                    col += 14; // Shift to the right for the f-block gap
+                }
+                
+                // Place in grid if within bounds
+                if (row >= 0 && row < 10 && col >= 0 && col < 18) {
+                    grid[row][col] = element;
+                }
+            });
+            
+            // Create the periodic table grid
+            for (let row = 0; row < 10; row++) {
+                for (let col = 0; col < 18; col++) {
+                    const element = grid[row][col];
+                    const cell = document.createElement('div');
+                    
+                    if (element) {
+                        cell.className = `periodic-element ${element.category} ${element.symbol === currentElement.symbol ? 'selected' : ''}`;
+                        cell.innerHTML = `
+                            <div class="element-number">${element.atomicNumber}</div>
+                            <div class="element-symbol">${element.symbol}</div>
+                            <div class="element-name">${element.name}</div>
+                        `;
+                        cell.title = `${element.name} (${element.symbol}) - Număr atomic: ${element.atomicNumber}`;
+                        cell.addEventListener('click', () => selectElement(element));
+                    } else {
+                        // Empty cell
+                        cell.className = 'empty-cell';
+                    }
+                    
+                    periodicTable.appendChild(cell);
+                }
+            }
+        }
+
+        // Search elements
+        function searchElements() {
+            const searchTerm = elementSearch.value.trim().toLowerCase();
+            
+            if (searchTerm === '') {
+                // Show all elements
+                document.querySelectorAll('.periodic-element').forEach(el => {
+                    el.style.display = 'flex';
+                });
+                return;
+            }
+            
+            // Filter elements
+            document.querySelectorAll('.periodic-element').forEach(el => {
+                const symbol = el.querySelector('.element-symbol')?.textContent?.toLowerCase() || '';
+                const name = el.querySelector('.element-name')?.textContent?.toLowerCase() || '';
+                const number = el.querySelector('.element-number')?.textContent || '';
+                
+                if (symbol.includes(searchTerm) || name.includes(searchTerm) || number === searchTerm) {
+                    el.style.display = 'flex';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+        }
+
+        // Select an element from the periodic table
+        function selectElement(element) {
+            // Remove selected class from all elements
+            document.querySelectorAll('.periodic-element').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked element
+            const clickedElement = Array.from(document.querySelectorAll('.periodic-element')).find(el => {
+                return el.querySelector('.element-symbol')?.textContent === element.symbol;
+            });
+            
+            if (clickedElement) {
+                clickedElement.classList.add('selected');
+            }
+            
+            currentElement = element;
+            currentCharge = getMostCommonCharge(element.symbol);
+            
+            updateSelectedElementDisplay();
+            updateElectronInfoBox();
+            updateIonTypeDisplay();
+            updateChargeOptions();
+            renderAtom();
+            updateConfigDisplay();
+        }
+
+        // Update the selected element display
+        function updateSelectedElementDisplay() {
+            selectedElementDisplay.innerHTML = `
+                <div class="selected-element-symbol">${currentElement.symbol}</div>
+                <div class="selected-element-name">${currentElement.name}</div>
+                <div class="selected-element-details">Număr atomic: ${currentElement.atomicNumber} | Grup: ${currentElement.group} | Perioadă: ${currentElement.period}</div>
+            `;
+        }
+
+        // Update electron info box
+        function updateElectronInfoBox() {
+            const ionInfo = getElementIonInfo(currentElement);
+            
+            electronsLostValue.textContent = ionInfo.electronsText;
+            electronsLostDescription.innerHTML = ionInfo.description;
+            commonChargeNote.textContent = ionInfo.chargeNote;
+            
+            // If element is noble gas, hide the note
+            if (currentElement.category === "noble-gas" && currentElement.symbol !== "Xe") {
+                commonChargeNote.style.display = "none";
+            } else {
+                commonChargeNote.style.display = "block";
+            }
+        }
+
+        // Update ion type display based on current charge
+        function updateIonTypeDisplay() {
+            const ionInfo = getElementIonInfo(currentElement);
+            
+            // Update ion type box
+            ionTypeBox.className = `ion-type-box ${ionInfo.ionType}`;
+            
+            let iconClass, ionTypeText, processText;
+            
+            if (ionInfo.ionType === "positive") {
+                iconClass = "fa-plus-circle positive";
+                ionTypeText = "Ion Pozitiv (Cation)";
+                processText = "Elementul formează ioni pozitivi prin cedarea electronilor";
+            } else if (ionInfo.ionType === "negative") {
+                iconClass = "fa-minus-circle negative";
+                ionTypeText = "Ion Negativ (Anion)";
+                processText = "Elementul formează ioni negativi prin acceptarea electronilor";
+            } else {
+                iconClass = "fa-circle neutral";
+                ionTypeText = "Atom Neutru";
+                processText = "Elementul nu formează ioni în condiții normale";
+            }
+            
+            ionTypeBox.innerHTML = `
+                <div class="ion-type-label">
+                    <i class="fas ${iconClass}"></i>
+                    <span>${ionTypeText}</span>
+                </div>
+                <div>${processText}</div>
+            `;
+        }
+
+        // Update charge options buttons
+        function updateChargeOptions() {
+            ionChargeOptions.innerHTML = '';
+            
+            const ionInfo = getElementIonInfo(currentElement);
+            const charges = ionInfo.allCharges;
+            
+            if (charges.length === 0 || (charges.length === 1 && charges[0] === 0)) {
+                ionChargeOptions.innerHTML = '<div style="color: #666; text-align: center; width: 100%;">Acest element nu formează ioni stabili</div>';
+                return;
+            }
+            
+            charges.forEach(charge => {
+                const option = document.createElement('div');
+                
+                // Determine option type
+                let optionType = "neutral-option";
+                if (charge > 0) optionType = "positive-option";
+                if (charge < 0) optionType = "negative-option";
+                
+                option.className = `ion-charge-option ${optionType} ${charge === currentCharge ? 'active' : ''}`;
+                
+                // Format charge display
+                let chargeDisplay = '';
+                if (charge > 0) {
+                    chargeDisplay = `+${charge}`;
+                } else if (charge < 0) {
+                    chargeDisplay = `${charge}`;
+                } else {
+                    chargeDisplay = '0';
+                }
+                
+                option.textContent = chargeDisplay;
+                
+                // Highlight the most common charge (first in array)
+                if (charge === charges[0]) {
+                    option.style.fontWeight = 'bold';
+                    option.title = "Cea mai comună stare de oxidare";
+                }
+                
+                option.addEventListener('click', () => {
+                    // Update current charge
+                    currentCharge = charge;
+                    
+                    // Remove active class from all options
+                    document.querySelectorAll('.ion-charge-option').forEach(el => {
+                        el.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked option
+                    option.classList.add('active');
+                    
+                    // Update displays
+                    renderAtom();
+                    updateConfigDisplay();
+                });
+                
+                ionChargeOptions.appendChild(option);
+            });
+        }
+
+        // Render atom visualization
+        function renderAtom() {
+            atomRepresentation.innerHTML = '';
+            
+            // Create nucleus
+            const nucleus = document.createElement('div');
+            nucleus.className = 'nucleus';
+            nucleus.textContent = currentElement.symbol;
+            atomRepresentation.appendChild(nucleus);
+            
+            // Calculate number of electrons based on charge
+            let electronCount = currentElement.atomicNumber;
+            
+            if (currentCharge > 0) {
+                // Positive ion: lose electrons
+                electronCount -= Math.abs(currentCharge);
+            } else if (currentCharge < 0) {
+                // Negative ion: gain electrons
+                electronCount += Math.abs(currentCharge);
+            }
+            
+            // Ensure we don't have negative electrons or too many for visualization
+            electronCount = Math.max(electronCount, 1);
+            electronCount = Math.min(electronCount, 36); // Limit for visualization
+            
+            // Create orbits and electrons
+            const orbitRadii = [50, 75, 100, 125, 150];
+            const electronsPerOrbit = [2, 8, 8, 18, 10];
+            
+            let electronsPlaced = 0;
+            
+            for (let orbitIndex = 0; orbitIndex < orbitRadii.length; orbitIndex++) {
+                const radius = orbitRadii[orbitIndex];
+                const maxElectrons = electronsPerOrbit[orbitIndex];
+                
+                // Create orbit
+                const orbit = document.createElement('div');
+                orbit.className = 'orbit';
+                orbit.style.width = `${radius * 2}px`;
+                orbit.style.height = `${radius * 2}px`;
+                atomRepresentation.appendChild(orbit);
+                
+                // Place electrons on this orbit
+                const electronsOnThisOrbit = Math.min(maxElectrons, electronCount - electronsPlaced);
+                
+                for (let i = 0; i < electronsOnThisOrbit; i++) {
+                    const angle = (i / electronsOnThisOrbit) * 2 * Math.PI;
+                    const electron = document.createElement('div');
+                    electron.className = 'electron';
+                    electron.dataset.orbit = orbitIndex;
+                    electron.dataset.position = i;
+                    
+                    // Calculate position
+                    const x = radius * Math.cos(angle);
+                    const y = radius * Math.sin(angle);
+                    
+                    electron.style.left = `calc(50% + ${x}px)`;
+                    electron.style.top = `calc(50% + ${y}px)`;
+                    
+                    atomRepresentation.appendChild(electron);
+                    electronsPlaced++;
+                }
+                
+                if (electronsPlaced >= electronCount) break;
+            }
+            
+            // Add ion charge indicator if not neutral
+            if (currentCharge !== 0) {
+                const chargeIndicator = document.createElement('div');
+                chargeIndicator.className = 'nucleus';
+                chargeIndicator.style.width = '70px';
+                chargeIndicator.style.height = '70px';
+                chargeIndicator.style.fontSize = '14px';
+                chargeIndicator.style.lineHeight = '1.2';
+                chargeIndicator.textContent = `${currentElement.symbol}${Math.abs(currentCharge) === 1 ? '' : Math.abs(currentCharge)}${currentCharge > 0 ? '+' : ''}${currentCharge < 0 ? '-' : ''}`;
+                atomRepresentation.appendChild(chargeIndicator);
+            }
+        }
+
+        // Update electron configuration display
+        function updateConfigDisplay() {
+            let electronCount = currentElement.atomicNumber;
+            
+            if (currentCharge > 0) {
+                electronCount -= Math.abs(currentCharge);
+            } else if (currentCharge < 0) {
+                electronCount += Math.abs(currentCharge);
+            }
+            
+            // Generate simplified configuration
+            let ionConfig = generateElectronConfig(electronCount);
+            
+            const ionInfo = getElementIonInfo(currentElement);
+            const ionType = currentCharge > 0 ? "pozitiv (cation)" : currentCharge < 0 ? "negativ (anion)" : "neutru";
+            const process = currentCharge > 0 ? "cedare de electroni" : currentCharge < 0 ? "acceptare de electroni" : "niciun transfer";
+            
+            configDisplay.innerHTML = `
+                <div class="config-item"><strong>Element:</strong> ${currentElement.name} (${currentElement.symbol})</div>
+                <div class="config-item"><strong>Număr atomic:</strong> ${currentElement.atomicNumber}</div>
+                <div class="config-item"><strong>Configurația electronică a atomului:</strong> ${currentElement.config}</div>
+                <div class="config-item"><strong>Sarcina ionului:</strong> ${currentCharge > 0 ? '+' : ''}${currentCharge}</div>
+                <div class="config-item"><strong>Tipul ionului:</strong> ${ionType}</div>
+                <div class="config-item"><strong>Procesul:</strong> ${process}</div>
+                <div class="config-item"><strong>Electroni transferați:</strong> ${Math.abs(currentCharge)}</div>
+                <div class="config-item"><strong>Configurația electronică a ionului:</strong> ${ionConfig}</div>
+                <div class="config-item"><strong>Descriere:</strong> ${ionInfo.description.replace(/<strong>|<\/strong>/g, '')}</div>
+            `;
+        }
+
+        // Generate electron configuration based on electron count
+        function generateElectronConfig(electronCount) {
+            if (electronCount <= 2) {
+                return `1s${electronCount}`;
+            } else if (electronCount <= 10) {
+                return `1s² 2s${Math.min(2, electronCount-2)} ${electronCount > 4 ? `2p${Math.min(6, electronCount-4)}` : ''}`.trim();
+            } else if (electronCount <= 18) {
+                return `1s² 2s² 2p⁶ 3s${Math.min(2, electronCount-10)} ${electronCount > 12 ? `3p${Math.min(6, electronCount-12)}` : ''}`.trim();
+            } else if (electronCount <= 36) {
+                return `1s² 2s² 2p⁶ 3s² 3p⁶ 4s${Math.min(2, electronCount-18)} ${electronCount > 20 ? `3d${Math.min(10, electronCount-20)}` : ''} ${electronCount > 30 ? `4p${Math.min(6, electronCount-30)}` : ''}`.trim();
+            } else {
+                return `Configurație complexă (${electronCount} electroni)`;
+            }
+        }
+
+        // Animate the electron transfer process
+        function animateProcess() {
+            if (currentCharge === 0) {
+                alert(`Elementul ${currentElement.symbol} este în stare neutră, nu are loc niciun transfer de electroni.`);
+                return;
+            }
+            
+            const electronsToTransfer = Math.abs(currentCharge);
+            const transferDirection = currentCharge > 0 ? "outward" : "inward";
+            
+            // Clear any existing animations
+            resetAnimation();
+            
+            // Get all electrons
+            const electrons = document.querySelectorAll('.electron');
+            
+            if (transferDirection === "outward") {
+                // Positive ion: animate electrons leaving
+                const electronsToAnimate = Array.from(electrons).slice(-electronsToTransfer);
+                
+                if (electronsToAnimate.length === 0) {
+                    alert("Nu sunt suficienți electroni pentru a anima procesul!");
+                    return;
+                }
+                
+                electronsToAnimate.forEach((electron, index) => {
+                    setTimeout(() => {
+                        // Create transfer indicator
+                        const transfer = document.createElement('div');
+                        transfer.className = `electron-transfer transfer-positive`;
+                        transfer.innerHTML = `<i class="fas fa-arrow-right"></i> Cedare`;
+                        transfer.style.top = `${50 + Math.sin(index * 0.5) * 30}%`;
+                        transfer.style.left = `${60 + index * 5}%`;
+                        
+                        atomRepresentation.appendChild(transfer);
+                        
+                        // Show transfer
+                        setTimeout(() => {
+                            transfer.style.opacity = '1';
+                        }, 100);
+                        
+                        // Move electron outward
+                        electron.style.transform = `translate(${120 + index * 15}px, ${-40 + index * 8}px)`;
+                        electron.style.opacity = '0.3';
+                        
+                        // Hide transfer after animation
+                        setTimeout(() => {
+                            transfer.style.opacity = '0';
+                        }, 1500);
+                        
+                    }, index * 600);
+                });
+            } else {
+                // Negative ion: simulate electrons coming in
+                const electronsToHighlight = Array.from(electrons).slice(-electronsToTransfer);
+                
+                electronsToHighlight.forEach((electron, index) => {
+                    setTimeout(() => {
+                        // Create transfer indicator
+                        const transfer = document.createElement('div');
+                        transfer.className = `electron-transfer transfer-negative`;
+                        transfer.innerHTML = `<i class="fas fa-arrow-left"></i> Acceptare`;
+                        transfer.style.top = `${50 + Math.sin(index * 0.5) * 30}%`;
+                        transfer.style.left = `${30 - index * 5}%`;
+                        
+                        atomRepresentation.appendChild(transfer);
+                        
+                        // Show transfer
+                        setTimeout(() => {
+                            transfer.style.opacity = '1';
+                        }, 100);
+                        
+                        // Highlight electron
+                        electron.style.boxShadow = '0 0 15px #27ae60';
+                        electron.style.transform = 'scale(1.3)';
+                        
+                        // Reset after animation
+                        setTimeout(() => {
+                            electron.style.boxShadow = '0 0 8px rgba(52, 152, 219, 0.8)';
+                            electron.style.transform = 'scale(1)';
+                        }, 1500);
+                        
+                        // Hide transfer after animation
+                        setTimeout(() => {
+                            transfer.style.opacity = '0';
+                        }, 1500);
+                        
+                    }, index * 600);
+                });
+            }
+        }
+
+        // Reset animation
+        function resetAnimation() {
+            // Clear any transfer animations
+            const transfers = document.querySelectorAll('.electron-transfer');
+            transfers.forEach(el => el.remove());
+            
+            // Reset electron positions and styles
+            const electrons = document.querySelectorAll('.electron');
+            electrons.forEach(electron => {
+                electron.style.transform = '';
+                electron.style.opacity = '';
+                electron.style.boxShadow = '';
+            });
+            
+            loadingAnimation.style.display = 'none';
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
